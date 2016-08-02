@@ -1,0 +1,18 @@
+{% extends "manage.html" %}
+{% block title %} 评论管理 {% end %}
+{% block main %}
+<main id="main">
+<div class="container">
+	<ul class="list-group">
+   <li class="list-group-item" style="background-color:blue;color:white;text-align:center;">评论管理</li>
+   {% for comment in comments %}
+   <li class="list-group-item" style="background-color:#eee;">
+   		<a href="/delete-comment/{{comment['id']}}" style="float:right;width:50px;">删除</a>
+   		<a > RE {{comment['re']}}  from {{comment['name']}}  {{comment['time']}}</a>
+   </li>
+   <li class="list-group-item" >{{comment['content']}}</li>
+   {% end %}
+</ul>
+</div>
+</main>
+{% end %}

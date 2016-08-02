@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Zheng Dou">
+	
+	<title>Zheng Dou</title>
+
+	<link rel="shortcut icon" href="{{ static_url("images/gt_favicon.png")}}">
+	
+	<!-- Bootstrap -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	<!-- Icons -->
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	<!-- Custom styles -->
+	<link rel="stylesheet" href="{{ static_url("css/styles.css")}}">
+
+	<!--[if lt IE 9]> <script src="assets/js/html5shiv.js"></script> <![endif]-->
+</head>
+<body class="home">
+<div style="height:100%;">
+<header id="header">
+	<div id="head" class="parallax" parallax-speed="2" style="padding: 0px 0 0px 0;">
+	<div id="back">
+		<h1 id="logo" class="text-center" >
+			<img class="img-circle" src="{{static_url("images/head.png")}}" alt="">
+			<span class="title" style="color:#fff;">Zheng Dou</span>
+			<span class="tagline" style="color:#fff;">just for you<br>
+				<a style="color:#fff;" href="">zhengdou1992@live.com</a><br><br></span>
+			<a  href="/blog" class="img-enter"><img src="{{static_url("images/enter.gif")}}"></a>
+		</h1>
+		</div>
+	</div>
+
+</header>
+</div>
+
+
+
+
+<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+<script>
+	total = document.documentElement.clientHeight;
+	document.getElementById("head").style.height=total+"px";
+	document.getElementById("back").style.height=total+"px";
+</script>
+
+<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="{{static_url("js/template.js")}}"></script>
+</body>
+</html>

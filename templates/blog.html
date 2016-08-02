@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %} Blog {% end %}
+{% block main %}
+<main id="main">
+
+	<div class="container">
+		<div class="row topspace">
+			<div class="col-sm-10 col-sm-offset-1">
+				{% for article in articles %}
+				<div style="background-color:#eee;">										
+				<article class="post" style="padding-right:20px;padding-left:20px;">
+					<header class="entry-header">
+						<div class="entry-meta">
+							
+							<span class="posted-on"><time class="entry-date published" date="2013-09-27">{{article['time']}}<br></time></span>			
+							
+						</div>
+						<h1 class="entry-title"><a href="/article/{{article['id']}}" rel="bookmark">{{article['name']}}</a></h1>
+					</header>
+					<div class="entry-content">
+						<p>{% raw article['summary'] %} 
+						<a href="/article/{{article['id']}}" class="more-link"><br>Continue reading&#8230;</a><br></p>
+					</div>
+				</article>
+				</div>	
+				{% end %}
+			</div> 
+		</div>
+		<center class="">
+			<ul class="pagination">
+				<li class="disabled"><a href="">&laquo;</a></li>
+				<li class="active"><a href="">1</a></li>
+				<li><a href="">2</a></li>
+				<li><a href="">3</a></li>
+				<li><a href="">4</a></li>
+				<li><a href="">5</a></li>
+				<li><a href="">6</a></li>
+				<li><a href="">&raquo;</a></li>
+			</ul>
+		</center>
+	
+
+	</div>	<!-- /container -->
+
+</main>
+{% end %}
+

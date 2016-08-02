@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %} {{article['name']}} {% end %}
+{% block main %}
+<main id="main">
+
+	<div class="container">
+		
+		<div class="row topspace">
+			<div class="col-sm-10 col-sm-offset-1">
+															
+ 				<article class="post">
+					<header class="entry-header">
+ 						<div class="entry-meta"> 
+ 							<span class="posted-on"><time class="entry-date published">{{article['time']}}</time></span>			
+ 						</div> 
+ 						<h1 class="entry-title"><a href="/article/{{article['id']}}" rel="bookmark">{{article['name']}}</a></h1>
+					</header> 
+					<div class="entry-content"> 
+						{% raw article['content'] %}
+					</div> 
+				</article><!-- #post-## -->
+
+			</div>
+		</div> <!-- /row post  -->
+		<nav id="comment-nav-below" class="comment-navigation clearfix" role="navigation"><div class="nav-content">
+							
+					</nav>
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+
+				<div id="comments">	
+					<h3 class="comments-title">3 Comments</h3>
+					<a id='{{article['name']}}' href="#comment-form" class="leave-comment" onclick="set_article_id(this)">Leave a Comment</a>
+					
+					<ol class="comments-list">
+					{% for comment in comments %}
+						<li class="comment">
+							<div class="all">
+								<img src="{{static_url("images/avatar_man.png")}}" alt="Avatar" class="avatar">
+												
+								<div class="comment-meta">
+									<span class="author"><a href="#">{{comment['name']}}</a></span>
+									<span class="date"><a href="#">{{comment['time']}}</a></span>
+									<span class="reply"><a id={{comment['id']}} href="#comment-form" name={{comment['name']}} onclick='set_comment_id(this)'> <img src="{{static_url("images/reply.png")}}"  class="reply-img"></a></span>
+								</div>
+								<div class="comment-body">
+									{{comment['content']}}
+								</div>
+							</div>
+							
+							<ul class="children">
+							{% for child_comment in child_comments[comment['id']]%}
+								<li class="comment">
+									<div class="all">
+										<img src="{{static_url("images/avatar_man.png")}}" alt="Avatar" class="avatar">
+																
+										<div class="comment-meta">
+											<span class="author"><a href="#">{{child_comment['name']}}</a></span>
+									<span class="date"><a href="#">{{child_comment['time']}}</a></span>
+									<span class="reply"><a id={{comment['id']}} href="#comment-form" name={{child_comment['name']}} onclick='set_comment_id(this)'><img src="{{static_url("images/reply.png")}}"  class="reply-img"></a></span>
+										</div><!-- .comment-meta -->
+
+										<div class="comment-body">
+											{{child_comment['content']}}
+										</div><!-- .comment-body -->
+									</div>
+								</li>
+							{% end %}
+							</ul><!-- .children -->
+						</li>
+						{% end %}
+					</ol>
+					
+					<div class="clearfix"></div>
+					<nav id="comment-nav-below" class="comment-navigation clearfix" role="navigation"><div class="nav-content">
+							
+					</nav><!-- #comment-nav-below -->
+
+					<div id="comment-form">
+						<h3 id="reply-title">Leave a Reply</h3>
+						<form method="post" action="/comment" id="commentform">
+							<div class="form-group">
+								<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control" id="article_id">
+							</div>
+							<div class="form-group">
+								<input type="hidden" name="comment_id" class="form-control" id="comment_id" >
+							</div>
+							<div class="form-group">
+								<input type="hidden" name="re" class="form-control" id="re" >
+							</div>
+							<div class="form-group">
+								<label for="inputName">Name</label>
+
+								<input  type="name" class="form-control" id="inputName" name="name" placeholder="Enter your name">
+							</div>
+							<div class="form-group">
+								<label for="inputEmail">Email address <i class="text-danger">*</i></label>
+								<input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your email">
+							</div>
+							<div class="form-group">
+								<label for="inputComment">Comment</label>
+								<textarea id="inputComment" class="form-control" name="comment" rows="6"></textarea>
+							</div>
+							<div class="row">
+								<div class="col-md-4 col-md-offset-8 text-right">
+  									<input type="submit" value="Submit" class="btn btn-action">
+								</div>
+							</div>
+						</form>
+					</div> <!-- /respond -->
+				</div>
+			</div>
+		</div> <!-- /row comments -->
+		<div class="clearfix"></div>
+
+	</div>	<!-- /container -->
+
+</main>
+{% end %}
