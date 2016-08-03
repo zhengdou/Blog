@@ -31,6 +31,10 @@ def escape(strings):
 		result.append(MySQLdb.escape_string(string))
 	return result
 
+class BaseHandler(tornado.web.RequestHandler):
+	def get_current_user(self):
+		return self.get_secure_cookie("username")
+
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
@@ -73,11 +77,29 @@ class AboutHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('about.html')
 
-class ManageHandler(tornado.web.RequestHandler):
+class LoginHandler(BaseHandler):
+	def get(self):
+		self.render("login.html")
+	def post(self):
+		name = self.get_argument("username")
+		password = self.get_argument("password")
+		if db.get("SELECT * FROM users WHERE name=%s and password=%s", name, password) is not None:
+			self.set_secure_cookie("username",self.get_argument("username"))
+			self.redirect("/manage")
+		else:
+			self.redirect("/login")
+class LogoutHandler(BaseHandler):
+	def get(self):
+		self.clear_cookie("username")
+		self.redirect("/blog")
+
+class ManageHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		self.render('manage.html')
 
-class NewArticleHandler(tornado.web.RequestHandler):
+class NewArticleHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		self.render('new_article.html')
 	def post(self):
@@ -91,12 +113,14 @@ class NewArticleHandler(tornado.web.RequestHandler):
 		db.execute(sqlstr)
 		self.redirect("/blog")
 
-class ArticleManageHandler(tornado.web.RequestHandler):
+class ArticleManageHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		articles = db.query("SELECT id,name,time FROM articles ORDER BY id DESC")
 		self.render('article_manage.html', articles=articles)
 
-class EditHandler(tornado.web.RequestHandler):
+class EditHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self, id):
 		article = db.get("SELECT id,name,md_content FROM articles WHERE id=%s", id)
 		self.render('edit.html', article=article)
@@ -110,13 +134,15 @@ class EditHandler(tornado.web.RequestHandler):
 		db.execute(sqlstr)
 		self.redirect("/article/"+id)
 
-class DeleteArticleHandler(tornado.web.RequestHandler):
+class DeleteArticleHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self,id):
 		db.execute('DELETE FROM articles WHERE id=%s',id)
 		db.execute('DELETE FROM comments WHERE article_id=%s',id)
 		self.redirect("/article-manage")
 
-class ExportHandler(tornado.web.RequestHandler):
+class ExportHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self,id):
 		lineend = os.linesep
 		article = db.get("SELECT name,md_content FROM articles WHERE id=%s", id)
@@ -125,19 +151,20 @@ class ExportHandler(tornado.web.RequestHandler):
 		result = ''
 		for item in content:
 			result += item+lineend
-		print content
 		file_name = name+'.md'
 		file = os.path.join(os.getcwd(),"static","article",file_name)
 		with open(file,'w') as f:
 			f.write(result)
 		self.redirect("/static/article/"+file_name)
 
-class CommentManageHandler(tornado.web.RequestHandler):
+class CommentManageHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		comments = db.query("SELECT * FROM comments ORDER BY time DESC")
 		self.render("comment_manage.html", comments=comments)
 
-class DeleteCommentHandler(tornado.web.RequestHandler):
+class DeleteCommentHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self, id):
 		db.execute('DELETE FROM comments WHERE id=%s',id)
 		db.execute('DELETE FROM comments WHERE comment_id=%s',id)
@@ -158,14 +185,20 @@ handlers = [(r'/', IndexHandler),
 			(r'/delete-article/(\d+)', DeleteArticleHandler),
 			(r'/export/(\d+)', ExportHandler),
 			(r'/comment-manage', CommentManageHandler),
-			(r'/delete-comment/(\d+)', DeleteCommentHandler)]
+			(r'/delete-comment/(\d+)', DeleteCommentHandler),
+			(r'/login', LoginHandler),
+			(r'/logout', LogoutHandler)]
 
 
 if __name__ == '__main__':
 	tornado.options.parse_command_line()
-	app = tornado.web.Application(handlers=handlers, 
-		template_path=os.path.join(os.path.dirname(__file__), "templates"),
-		static_path=os.path.join(os.path.dirname(__file__), "static"))
+	settings = {"template_path":os.path.join(os.path.dirname(__file__), "templates"),
+				"static_path":os.path.join(os.path.dirname(__file__), "static"),
+				"xsrf_cookies": True,
+				"cookie_secret":"G2m7BmK6T0a8i3WXPM0GekTHuCZ2pEqQskpxqdgOE+A=",
+				"login_url":"/login"
+	}
+	app = tornado.web.Application(handlers=handlers, **settings)
 	http_server = tornado.httpserver.HTTPServer(app)
 	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
