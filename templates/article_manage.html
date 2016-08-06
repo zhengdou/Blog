@@ -7,11 +7,11 @@
    <li class="list-group-item" style="background-color:blue;color:white;text-align:center;">文章管理</li>
    {% for article in articles %}
    <li class="list-group-item">
-   		<a href='#' style="float:right;width:50px;">a</a>
    		<a href="/export/{{article['id']}}" style="float:right;width:50px;">导出</a>
    		<a href="/delete-article/{{article['id']}}" style="float:right;width:50px;">删除</a>
    		<a href="/edit/{{article['id']}}" style="float:right;width:50px;">编辑</a>
-   		<a href="/article/{{article['id']}}"> {{article['name']}}  {{article['time']}}</a>
+   		<a href="/article/{{article['id']}}" > {{article['name']}}</a>
+         <a style="color:#000;text-align:center;">{{article['time']}}</a>
    </li>
    {% end %}
 </ul>

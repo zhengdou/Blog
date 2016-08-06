@@ -14,7 +14,7 @@
 <body>
 
 <div class="signin">
-	<div class="signin-head"><img src="{{static_url("images/head.png")}}" alt="" class="img-circle"></div>
+	<div class="signin-head"><img src="{{static_url("images/head.png")}}" alt="" class="img-circle" style=""></div>
 	<form class="form-signin" role="form" action="/login" method="post">
 		{% raw xsrf_form_html() %}
 		<input type="text" class="form-control" name="username" placeholder="用户名" required autofocus />

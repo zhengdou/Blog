@@ -2,14 +2,20 @@ body {
 	background:url(../images/bg_head.jpg) #f8f6e9 no-repeat;
 	background-size:100%;
 }
+.img-circle {
+  background-color: #eee;
+  width:150px;
+  height:150px;
+  border-radius:180px;
+}
 
 .signin {
-  filter:alpha(Opacity=80);
-  -moz-opacity:0.8;
-  opacity: 0.8;
-	width:477px;
-	height:479px;
-	background-color:#eee;
+  filter:alpha(Opacity=90);
+  -moz-opacity:0.9;
+  opacity: 0.9;
+	width:350px;
+	height:400px;
+	background-color:#fff;
 	margin:0 auto;
 	
 	position:absolute;
@@ -27,12 +33,6 @@ body {
   max-width: 330px;
   padding: 43px 15px 15px 15px;
   margin: 0 auto;
-}
-.form-signin .checkbox {
-  margin-bottom: 10px;
-}
-.form-signin .checkbox {
-  font-weight: normal;
 }
 .form-signin .form-control {
   position: relative;

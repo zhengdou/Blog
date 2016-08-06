@@ -5,7 +5,8 @@
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="hello world">
 	<meta name="author"      content="zhengdou">
-	
+	<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js">
+	</script>
 	<title> {% block title %}{% end %}</title>
 
 	<link rel="shortcut icon" href="{{ static_url("images/gt_favicon.png")}}">
@@ -45,7 +46,6 @@
 					<li><a href="/">Home</a></li>
 					<li><a href="/blog">Blog</a></li>
 					<li><a href="/about">About</a></li>
-					<li><a href="/manage">Manage</a></li>
 				</ul>
 			
 			</div><!--/.nav-collapse -->			
@@ -57,70 +57,38 @@
 <footer id="footer" class="topspace">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3 widget">
+			<div class="col-md-4 widget">
 				<h3 class="widget-title">Contact</h3>
 				<div class="widget-body">
-					<p>QQ:1003372835<br>
-						<a href="mailto:#">zhengdou1992@live.com</a><br>
-						<br>
+					<p><img style="width:90px;height:90px;" src="{{ static_url("images/qq.jpg")}}">
+					<img style="width:90px;height:90px;" src="{{ static_url("images/WeChat.jpg")}}">
 					</p>	
 				</div>
 			</div>
 
-			<div class="col-md-3 widget">
+			<div class="col-md-4 widget">
 				<h3 class="widget-title">Follow me</h3>
 				<div class="widget-body">
 					<p class="follow-me-icons">
-						<a href=""><i class="fa fa-weibo fa-2"></i></a>
-						<a href=""><i class="fa fa-github fa-2"></i></a>
-						<a href=""><i class="fa fa-facebook fa-2"></i></a>
+						<a href="http://weibo.com/p/1005052512627187"><i class="fa fa-weibo fa-2"></i></a>
+						<a href="https://github.com/zhengdou"><i class="fa fa-github fa-2"></i></a>
+						<a href="mailto:zhengdou1992@live.com"><i class="fa fa-envelope-o"></i></a>
 					</p>
 				</div>
 			</div>
 
-			<div class="col-md-3 widget">
-				<h3 class="widget-title">Text widget</h3>
+			<div class="col-md-4 widget">
+				<h3 class="widget-title">Designer and Copyright</h3>
 				<div class="widget-body">
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, nihil natus explicabo ipsum quia iste aliquid repellat eveniet velit ipsa sunt libero sed aperiam id soluta officia asperiores adipisci maxime!</p>
+					<p>PurgaTory design the website<br><br>Copyright &copy;Purgatory 2016</p>
 				</div>
 			</div>
 
-			<div class="col-md-3 widget">
-				<h3 class="widget-title">Form widget</h3>
-				<div class="widget-body">
-					<p>+234 23 9873237<br>
-						<a href="mailto:#">some.email@somewhere.com</a><br>
-						<br>
-						234 Hidden Pond Road, Ashland City, TN 37015
-					</p>	
-				</div>
-			</div>
 
 		</div> <!-- /row of widgets -->
 	</div>
 </footer>
 
-<footer id="underfooter">
-	<div class="container">
-		<div class="row">
-			
-			<div class="col-md-6 widget">
-				<div class="widget-body">
-					<p>234 Hidden Pond Road, Ashland City, TN 37015 </p>
-				</div>
-			</div>
-
-			<div class="col-md-6 widget">
-				<div class="widget-body">
-					<p class="text-right">
-						Copyright &copy; 2014, Your awesome name here<br> 
-						Design: <a href="http://www.gettemplate.com" rel="designer">Initio by GetTemplate</a> </p>
-				</div>
-			</div>
-
-		</div> <!-- /row of widgets -->
-	</div>
-</footer>
 
 
 
@@ -129,23 +97,25 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="{{static_url("js/template.js")}}"></script>
 <script>
-	function set_article_id(obj)
-	{
-		document.getElementById("comment_id").value = "";
-		document.getElementById("inputComment").value="";
-		document.getElementById("re").value=obj.id;
-	}
 	function set_comment_id(obj)
 	{
-		id = obj.id;
-		document.getElementById("comment_id").value = id;
-		name=obj.name;
-		document.getElementById("re").value=name;
-		document.getElementById("inputComment").value="@"+name+":------";
+		var id = obj.id;
+		var divname="div"+id;
+		var name="name"+id;
+		if (document.getElementById(divname).style.display=="none")
+		{
+			document.getElementById(divname).style.display="block";
+			document.getElementById(name).focus();
+		}
+		else
+		{
+			document.getElementById(divname).style.display="none";
+		}
+		
 	}
 	function mycheck()
 	{
-		name=document.getElementById("inputName").value;
+		var name=document.getElementById("inputName").value;
 		if(name =="")
 		{
 			$('.tooltip-hide').tooltip('hide');	

@@ -155,8 +155,12 @@ blockquote {
   padding: 10px 20px;
   margin: 0 0 30px;
   border-left: 5px solid #eee;
-  background-color: black;
+  background-color:#8DB6CD;
   color:white;
+}
+code {
+  background-color:#8B0A50;
+  color:#00EE00;
 }
 h1,
 h2,
@@ -234,12 +238,12 @@ a:hover {
 	font-size: 3.0625rem;
 }
 #back {
-	background-color:#000 ;
+	background-color:#000;
 	height:100%;
 	padding: 100px 0 35px 0;
-	filter:alpha(Opacity=40);
-	-moz-opacity:0.4;
-	opacity: 0.4;
+	filter:alpha(Opacity=30);
+	-moz-opacity:0.3;
+	opacity: 0.3;
 }
 #head {
   background: url(../images/bg_head.jpg);
@@ -775,6 +779,9 @@ footer.entry-meta .meta-in {
 }
 #respond {
   margin: 55px 0 0 0;
+}
+.hide {
+  display: none;
 }
 /*********************************************************************
 

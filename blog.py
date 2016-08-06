@@ -18,7 +18,7 @@ define("mysql_user", default="root", help="mysql username")
 define("mysql_password", default="930614", help="mysql password")
 
 db = torndb.Connection(host=options.mysql_host, database=options.mysql_database, user=options.mysql_user, password=options.mysql_password, charset="utf8")
-
+PER_PAGE = 6
 def md2html(content):
 	return Markdown().convert(content)
 
@@ -41,8 +41,14 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class BlogHandler(tornado.web.RequestHandler):
 	def get(self):
-		articles = db.query("SELECT * FROM articles ORDER BY time DESC")
-		self.render('blog.html', articles=articles)
+		total = db.get("SELECT COUNT(*) FROM articles")
+		page_number = total['COUNT(*)']/PER_PAGE
+		if total['COUNT(*)']%PER_PAGE != 0:
+			page_number +=1
+		page = int(self.get_argument('page', '1'))
+		start = (page-1) * PER_PAGE
+		articles = db.query("SELECT * FROM articles ORDER BY time DESC limit %s,%s", start, PER_PAGE)
+		self.render('blog.html', articles=articles, page_number=page_number, page=page)
 
 class ShowArticleHandler(tornado.web.RequestHandler):
 	def get(self, id):
@@ -105,11 +111,12 @@ class NewArticleHandler(BaseHandler):
 	def post(self):
 		name = self.get_argument('title')
 		md_content = self.get_argument('content')
+		md_summary = self.get_argument('summary')
 		content = md2html(md_content)
-		name, content, md_content = escape((name, content, md_content))
-		summary = content
+		summary = md2html(md_summary)
+		name, summary, md_summary, content, md_content = escape((name, summary, md_summary, content, md_content))
 		time_now =  time.strftime('%Y-%m-%d %X', time.localtime())
-		sqlstr = "INSERT INTO articles(name, summary, content, md_content, time) VALUES ('"+name+"','"+summary+"','"+content+"','"+md_content+"','"+time_now+"')"
+		sqlstr = "INSERT INTO articles(name, summary, md_summary, content, md_content, time) VALUES ('"+name+"','"+summary+"','"+md_summary+"','"+content+"','"+md_content+"','"+time_now+"')"
 		db.execute(sqlstr)
 		self.redirect("/blog")
 
@@ -122,15 +129,16 @@ class ArticleManageHandler(BaseHandler):
 class EditHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, id):
-		article = db.get("SELECT id,name,md_content FROM articles WHERE id=%s", id)
+		article = db.get("SELECT id,name,md_summary,md_content FROM articles WHERE id=%s", id)
 		self.render('edit.html', article=article)
 	def post(self, id):
 		name = self.get_argument('title')
 		md_content = self.get_argument('content')
+		md_summary = self.get_argument('summary')
 		content = md2html(md_content)
-		id, name, content, md_content = escape((id, name, content, md_content))
-		summary = content
-		sqlstr = "UPDATE articles SET name='"+name+"', summary='"+summary+"', content='"+content+"', md_content='"+md_content+"' WHERE id='"+id+"'"
+		summary = md2html(md_summary)
+		id, name, summary, md_summary, content, md_content = escape((id, name, summary, md_summary, content, md_content))
+		sqlstr = "UPDATE articles SET name='"+name+"', summary='"+summary+"', md_summary='"+md_summary+"', content='"+content+"', md_content='"+md_content+"' WHERE id='"+id+"'"
 		db.execute(sqlstr)
 		self.redirect("/article/"+id)
 

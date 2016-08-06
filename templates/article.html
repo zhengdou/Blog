@@ -30,9 +30,7 @@
 			<div class="col-sm-10 col-sm-offset-1">
 
 				<div id="comments">	
-					<h3 class="comments-title">3 Comments</h3>
-					<a id='{{article['name']}}' href="#comment-form" class="leave-comment" onclick="set_article_id(this)">Leave a Comment</a>
-					
+					<h3 class="comments-title"><a class="leave-comment" href="#commentform" >Comments</a></h3>				
 					<ol class="comments-list">
 					{% for comment in comments %}
 						<li class="comment">
@@ -42,11 +40,25 @@
 								<div class="comment-meta">
 									<span class="author"><a href="#">{{comment['name']}}</a></span>
 									<span class="date"><a href="#">{{comment['time']}}</a></span>
-									<span class="reply"><a id={{comment['id']}} href="#comment-form" name={{comment['name']}} onclick='set_comment_id(this)'> <img src="{{static_url("images/reply.png")}}"  class="reply-img"></a></span>
+									<span class="reply"><a id={{comment['id']}} name={{comment['name']}} onclick='set_comment_id(this)'> <i class="fa fa-comments-o" style="font-size:30px;"></i></a></span>
+
 								</div>
 								<div class="comment-body">
 									{{comment['content']}}
 								</div>
+
+								<div id="div{{comment['id']}}" style="display:none;">
+										<form method="post" action="/comment">
+											{% raw xsrf_form_html() %}
+											<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control">
+											<input type="hidden" name="comment_id" class="form-control" value="{{comment['id']}}">
+											<input type="hidden" name="re" class="form-control" value="{{comment['name']}}">
+											<input  type="name" id="name{{comment['id']}}" class="form-control" name="name" placeholder="Enter your name" >
+											<input type="email" id="emai{{comment['id']}}" class="form-control" name="email" placeholder="Enter your email">
+											<textarea id="text{{comment['id']}}" class="form-control" name="comment" rows="2"></textarea>
+											<input type="submit" value="Submit" class="btn btn-action" style="float:right;">
+										</form>
+									</div>
 							</div>
 							
 							<ul class="children">
@@ -58,12 +70,26 @@
 										<div class="comment-meta">
 											<span class="author"><a href="#">{{child_comment['name']}}</a></span>
 									<span class="date"><a href="#">{{child_comment['time']}}</a></span>
-									<span class="reply"><a id={{comment['id']}} href="#comment-form" name={{child_comment['name']}} onclick='set_comment_id(this)'><img src="{{static_url("images/reply.png")}}"  class="reply-img"></a></span>
+									<span class="reply"><a id={{child_comment['id']}} name={{child_comment['name']}} onclick='set_comment_id(this)'><i class="fa fa-comments-o" style="font-size:30px;"></i></span>
 										</div><!-- .comment-meta -->
 
 										<div class="comment-body">
-											{{child_comment['content']}}
+											<a style="color:blue;font-size:20px;">@{{child_comment['re']}}  </a>{{child_comment['content']}}
 										</div><!-- .comment-body -->
+
+										<div id="div{{child_comment['id']}}" style="display:none;">
+										<form method="post" action="/comment" id="form{{child_comment['id']}}">
+											{% raw xsrf_form_html() %}
+											<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control">
+											<input type="hidden" name="comment_id" class="form-control" value="{{comment['id']}}">
+											<input type="hidden" name="re" class="form-control" value="{{child_comment['name']}}">
+											<input  type="name" id="name{{child_comment['id']}}" class="form-control" name="name" placeholder="Enter your name" >
+											<input type="email" id="emai{{child_comment['id']}}" class="form-control" name="email" placeholder="Enter your email">
+											<textarea id="text{{child_comment['id']}}" class="form-control" name="comment" rows="2"></textarea>
+											<input type="submit" value="Submit" class="btn btn-action" style="float:right;">
+										</form>
+									</div>
+
 									</div>
 								</li>
 							{% end %}
@@ -80,14 +106,15 @@
 					<div id="comment-form">
 						<h3 id="reply-title">Leave a Reply</h3>
 						<form method="post" action="/comment" id="commentform">
+							{% raw xsrf_form_html() %}
 							<div class="form-group">
 								<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control" id="article_id">
 							</div>
 							<div class="form-group">
-								<input type="hidden" name="comment_id" class="form-control" id="comment_id" >
+								<input type="hidden" name="comment_id" class="form-control" id="comment_id" value="">
 							</div>
 							<div class="form-group">
-								<input type="hidden" name="re" class="form-control" id="re" >
+								<input type="hidden" name="re" class="form-control" id="re" value="{{article['name']}}">
 							</div>
 							<div class="form-group">
 								<label for="inputName">Name</label>
