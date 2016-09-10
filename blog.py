@@ -7,6 +7,9 @@ import tornado.web
 import torndb
 import time
 import MySQLdb
+import urllib
+import urllib2
+import json
 
 from markdown2 import Markdown
 from tornado.options import options, define
@@ -15,7 +18,7 @@ define("port", default = "8000", help = "run in server", type = int)
 define("mysql_host", default="127.0.0.1:3306", help="mysql host")
 define("mysql_database", default="blog", help="database name")
 define("mysql_user", default="root", help="mysql username")
-define("mysql_password", default="930614", help="mysql password")
+define("mysql_password", default="lcn0614", help="mysql password")
 
 db = torndb.Connection(host=options.mysql_host, database=options.mysql_database, user=options.mysql_user, password=options.mysql_password, charset="utf8")
 PER_PAGE = 6
@@ -33,7 +36,7 @@ def escape(strings):
 
 class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
-		return self.get_secure_cookie("username")
+		return self.get_secure_cookie("status")
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -64,17 +67,17 @@ class CommentHandler(tornado.web.RequestHandler):
 	def post(self):
 		article_id = self.get_argument('article_id')
 		comment_id = self.get_argument('comment_id')
-		name = self.get_argument('name')
-		email = self.get_argument('email')
+		name = self.get_secure_cookie('username')
+		head = self.get_secure_cookie('head')
 		content = self.get_argument('comment')
 		re = self.get_argument('re')
 		time_now =  time.strftime('%Y-%m-%d %X', time.localtime())
 		if comment_id == '':
-			article_id, name, email, content , re = escape((article_id, name, email, content, re))
-			sqlstr = "INSERT INTO comments(article_id, name, email, content, re, time) VALUES ('"+article_id+"','"+name+"','"+email+"','"+content+"','"+re+"','"+time_now+"')"
+			article_id, name, head, content, re = escape((article_id, name, head, content, re))
+			sqlstr = "INSERT INTO comments(article_id, name, head, content, re, time) VALUES ('"+article_id+"','"+name+"','"+head+"','"+content+"','"+re+"','"+time_now+"')"
 		else:
-			comment_id, name, email, content = escape((comment_id, name, email, content))
-			sqlstr = "INSERT INTO comments(comment_id, name, email, content, re, time) VALUES ('"+comment_id+"','"+name+"','"+email+"','"+content+"','"+re+"','"+time_now+"')"
+			comment_id, name, head, content, re = escape((comment_id, name, head, content, re))
+			sqlstr = "INSERT INTO comments(comment_id, name, head, content, re, time) VALUES ('"+comment_id+"','"+name+"','"+head+"','"+content+"','"+re+"','"+time_now+"')"
 		db.execute(sqlstr)
 		self.redirect("/article/"+article_id)
 
@@ -83,6 +86,30 @@ class AboutHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('about.html')
 
+class WeiboLoginHandler(BaseHandler):
+        def get(self):
+		error_code = self.get_argument('error_code',None)
+		if error_code:
+			self.redirect("/login")
+		else:
+			code = self.get_argument('code')
+			print code
+			url = 'https://api.weibo.com/oauth2/access_token?client_id=2987790593&client_secret=42fee685c15b3a317bd0b25c3bffb029&grant_type=authorization_code&redirect_uri=just4lcn.com/weibo'
+			date = {'code':str(code)}
+			req = urllib2.Request(url, urllib.urlencode(date))
+			res = urllib2.urlopen(req)
+			info = json.loads(res.read())
+			print info
+			access_token = info['access_token']
+			uid = info['uid']
+			url = "https://api.weibo.com/2/users/show.json?access_token="+access_token+"&uid="+uid
+			user = urllib2.urlopen(url).read()
+			user = json.loads(user)
+			self.set_secure_cookie("username",user['screen_name'])
+			self.set_secure_cookie("head", user['profile_image_url'])
+			self.redirect("/manage")
+           
+
 class LoginHandler(BaseHandler):
 	def get(self):
 		self.render("login.html")
@@ -90,18 +117,19 @@ class LoginHandler(BaseHandler):
 		name = self.get_argument("username")
 		password = self.get_argument("password")
 		if db.get("SELECT * FROM users WHERE name=%s and password=%s", name, password) is not None:
-			self.set_secure_cookie("username",self.get_argument("username"))
+			self.set_secure_cookie("status",'admin')
 			self.redirect("/manage")
 		else:
 			self.redirect("/login")
 class LogoutHandler(BaseHandler):
 	def get(self):
-		self.clear_cookie("username")
+		self.clear_all_cookies()
 		self.redirect("/blog")
 
 class ManageHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
+		print self.get_secure_cookie('username')
 		self.render('manage.html')
 
 class NewArticleHandler(BaseHandler):
@@ -195,7 +223,8 @@ handlers = [(r'/', IndexHandler),
 			(r'/comment-manage', CommentManageHandler),
 			(r'/delete-comment/(\d+)', DeleteCommentHandler),
 			(r'/login', LoginHandler),
-			(r'/logout', LogoutHandler)]
+			(r'/logout', LogoutHandler),
+                        (r'/weibo', WeiboLoginHandler)]
 
 
 if __name__ == '__main__':

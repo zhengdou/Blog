@@ -154,13 +154,13 @@ ol {
 blockquote {
   padding: 10px 20px;
   margin: 0 0 30px;
-  border-left: 5px solid #eee;
-  background-color:#8DB6CD;
+  border-left: 5px solid #CDCD00;
+  background-color:#63B8FF;
   color:white;
 }
 code {
-  background-color:#8B0A50;
-  color:#00EE00;
+  background-color:#E0EEE0;
+  color:#366488;
 }
 h1,
 h2,

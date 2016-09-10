@@ -35,7 +35,7 @@
 					{% for comment in comments %}
 						<li class="comment">
 							<div class="all">
-								<img src="{{static_url("images/avatar_man.png")}}" alt="Avatar" class="avatar">
+								<img src="{{comment['head']}}" alt="Avatar" class="avatar">
 												
 								<div class="comment-meta">
 									<span class="author"><a href="#">{{comment['name']}}</a></span>
@@ -65,7 +65,7 @@
 							{% for child_comment in child_comments[comment['id']]%}
 								<li class="comment">
 									<div class="all">
-										<img src="{{static_url("images/avatar_man.png")}}" alt="Avatar" class="avatar">
+										<img src="{{child_comment['head']}}" alt="Avatar" class="avatar">
 																
 										<div class="comment-meta">
 											<span class="author"><a href="#">{{child_comment['name']}}</a></span>
