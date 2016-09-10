@@ -37,6 +37,11 @@ def escape(strings):
 class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
 		return self.get_secure_cookie("status")
+	def get(self):
+		self.write_error(404)
+	def write_error(self, status_code, **kwargs):
+		if status_code == 404:
+			self.render('404.html')
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -232,7 +237,8 @@ handlers = [(r'/', IndexHandler),
 			(r'/delete-comment/(\d+)', DeleteCommentHandler),
 			(r'/login', LoginHandler),
 			(r'/logout', LogoutHandler),
-                        (r'/weibo', WeiboLoginHandler)]
+            (r'/weibo', WeiboLoginHandler),
+            (r'.*', BaseHandler)]
 
 
 if __name__ == '__main__':
