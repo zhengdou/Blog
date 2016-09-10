@@ -53,8 +53,6 @@
 											<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control">
 											<input type="hidden" name="comment_id" class="form-control" value="{{comment['id']}}">
 											<input type="hidden" name="re" class="form-control" value="{{comment['name']}}">
-											<input  type="name" id="name{{comment['id']}}" class="form-control" name="name" placeholder="Enter your name" >
-											<input type="email" id="emai{{comment['id']}}" class="form-control" name="email" placeholder="Enter your email">
 											<textarea id="text{{comment['id']}}" class="form-control" name="comment" rows="2"></textarea>
 											<input type="submit" value="Submit" class="btn btn-action" style="float:right;">
 										</form>
@@ -83,8 +81,6 @@
 											<input type="hidden" value="{{article['id']}}" name="article_id" class="form-control">
 											<input type="hidden" name="comment_id" class="form-control" value="{{comment['id']}}">
 											<input type="hidden" name="re" class="form-control" value="{{child_comment['name']}}">
-											<input  type="name" id="name{{child_comment['id']}}" class="form-control" name="name" placeholder="Enter your name" >
-											<input type="email" id="emai{{child_comment['id']}}" class="form-control" name="email" placeholder="Enter your email">
 											<textarea id="text{{child_comment['id']}}" class="form-control" name="comment" rows="2"></textarea>
 											<input type="submit" value="Submit" class="btn btn-action" style="float:right;">
 										</form>
@@ -115,15 +111,6 @@
 							</div>
 							<div class="form-group">
 								<input type="hidden" name="re" class="form-control" id="re" value="{{article['name']}}">
-							</div>
-							<div class="form-group">
-								<label for="inputName">Name</label>
-
-								<input  type="name" class="form-control" id="inputName" name="name" placeholder="Enter your name">
-							</div>
-							<div class="form-group">
-								<label for="inputEmail">Email address <i class="text-danger">*</i></label>
-								<input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your email">
 							</div>
 							<div class="form-group">
 								<label for="inputComment">Comment</label>

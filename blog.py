@@ -107,18 +107,25 @@ class WeiboLoginHandler(BaseHandler):
 			user = json.loads(user)
 			self.set_secure_cookie("username",user['screen_name'])
 			self.set_secure_cookie("head", user['profile_image_url'])
-			self.redirect("/manage")
+			self.redirect(self.get_secure_cookie('url'))
            
 
 class LoginHandler(BaseHandler):
 	def get(self):
+		url = self.get_argument('next', None)
+		if url:
+			self.set_secure_cookie('url', url)
+		else:
+			self.set_secure_cookie('url', '/blog')
 		self.render("login.html")
 	def post(self):
 		name = self.get_argument("username")
 		password = self.get_argument("password")
 		if db.get("SELECT * FROM users WHERE name=%s and password=%s", name, password) is not None:
 			self.set_secure_cookie("status",'admin')
-			self.redirect("/manage")
+			self.set_secure_cookie("username", name)
+			self.set_secure_cookie("head", "http://www.just4lcn.com/static/images/head.png")
+			self.redirect(self.get_secure_cookie('url'))
 		else:
 			self.redirect("/login")
 class LogoutHandler(BaseHandler):
