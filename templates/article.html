@@ -98,7 +98,7 @@
 					<nav id="comment-nav-below" class="comment-navigation clearfix" role="navigation"><div class="nav-content">
 							
 					</nav><!-- #comment-nav-below -->
-
+					{% if login %}
 					<div id="comment-form">
 						<h3 id="reply-title">Leave a Reply</h3>
 						<form method="post" action="/comment" id="commentform">
@@ -123,6 +123,7 @@
 							</div>
 						</form>
 					</div> <!-- /respond -->
+					{% end %}
 				</div>
 			</div>
 		</div> <!-- /row comments -->

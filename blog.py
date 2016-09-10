@@ -55,13 +55,14 @@ class BlogHandler(tornado.web.RequestHandler):
 
 class ShowArticleHandler(tornado.web.RequestHandler):
 	def get(self, id):
+		login = self.get_secure_cookie('username')
 		article = db.get("SELECT * FROM articles WHERE id=%s", id)
 		comments = db.query("SELECT * FROM comments WHERE article_id=%s", id)
 		child_comments = {}
 		for comment in comments:
 			child_comments[comment['id']] = db.query("SELECT * FROM comments WHERE comment_id=%s", comment['id'])
 
-		self.render('article.html', article=article, comments=comments, child_comments=child_comments)
+		self.render('article.html', article=article, comments=comments, child_comments=child_comments, login = login)
 
 class CommentHandler(tornado.web.RequestHandler):
 	def post(self):
