@@ -15,10 +15,10 @@ from markdown2 import Markdown
 from tornado.options import options, define
 
 define("port", default = "8000", help = "run in server", type = int)
-define("mysql_host", default="127.0.0.1:3306", help="mysql host")
-define("mysql_database", default="blog", help="database name")
-define("mysql_user", default="root", help="mysql username")
-define("mysql_password", default="lcn0614", help="mysql password")
+define("mysql_host", default="******", help="mysql host")
+define("mysql_database", default="****", help="database name")
+define("mysql_user", default="******", help="mysql username")
+define("mysql_password", default="****", help="mysql password")
 
 db = torndb.Connection(host=options.mysql_host, database=options.mysql_database, user=options.mysql_user, password=options.mysql_password, charset="utf8")
 PER_PAGE = 6
